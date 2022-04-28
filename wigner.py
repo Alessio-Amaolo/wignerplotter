@@ -5,30 +5,28 @@
 import numpy as np
 from numba import njit
 import matplotlib.pyplot as plt
-
-def factorial(arr):
-    # make this an element wise factorial!!!
-    pass 
+from linblad import sfactorial
 
 def wigner0(alpha, denmat, cutoff):
     # computes it only for state=|alpha>
     n = np.arange(0, cutoff, 1)
     state = np.exp((-np.abs(alpha)**2)/2)
-    state *= (alpha**n)*n/((factorial(n))**(1/2))
-    return np.dot(np.conjugate(state),np.dot(denmat, state))/np.pi
+    temp = [sfactorial(i) for i in n]
+    state *= (alpha**n)/temp
+    return np.real(np.dot(np.conjugate(state),np.dot(denmat, state))/np.pi)
 
-def getCnm0(cutoff):
-    beta = 4
-    Cnm = np.zeros((cutoff, cutoff))
-    for n in range(cutoff):
-        for m in range(cutoff):
-            Cnm[n,m] = np.exp(-beta)*(beta**n)*(np.conjugate(beta)**m)/((np.math.factorial(n)*np.math.factorial(m))**(1/2))
-    return Cnm
+#def getCnm0(cutoff):
+#    beta = 2
+#    Cnm = np.zeros((cutoff, cutoff))
+#    for n in range(cutoff):
+#        for m in range(cutoff):
+#            Cnm[n,m] = np.exp(-beta)*(beta**n)*(np.conjugate(beta)**m)/((np.math.factorial(n)*np.math.factorial(m))**(1/2))
+#    return Cnm
 
 def wignerGrid(grid, denmat):
     x1, y1 = grid
     nx, ny = y1.shape
-    p1 = x1*0
+    p1 = np.zeros(x1.shape)
     cutoff = denmat.shape[0]
     for i in range(nx):
         for j in range(ny):
@@ -38,11 +36,19 @@ def wignerGrid(grid, denmat):
     return p1
 
 if __name__ == '__main__':
-    cutoff = 40
-    cnm0 = getCnm0(cutoff)
-    grid = np.meshgrid(np.linspace(-2.5,2.5,101), np.linspace(-2.5,2.5,101))
+    #cutoff = 40
+    #cnm0 = getCnm0(cutoff)
+    cnm0 = np.load('denmat.npy')
+    X = np.linspace(-3,3,101)
+    grid = np.meshgrid(X, X)
     data = wignerGrid(grid, cnm0)
-    plt.pcolormech(data)
+    fig, ax = plt.subplots(1, figsize=(5,5))
+    cax = ax.contourf(X, X, data, levels=100)
+    fig.colorbar(cax)
+    #ax.set_xticks(X)
+    #ax.set_yticks(X)
+
+
     plt.show()
 
 
