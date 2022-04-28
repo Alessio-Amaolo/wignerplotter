@@ -45,15 +45,15 @@ def evolve(N, tf, nt, numsteps, steps_per_anim, beta, kappa, K):
 if __name__ == "__main__":
     N = 35
     beta = 2
-    numsteps = 3065
+    numsteps = 3066
     steps_per_anim = 1000
     tf = (10 ** (-9))*numsteps
     nt = numsteps*steps_per_anim
     #nt = (10 ** 6)
     dt = (tf / nt)
     # resolution = nt//numsteps
-    kappa = 2 * np.pi * 10 * 10 ** 3
+    kappa = 0 # 2 * np.pi * 10 * 10 ** 3
     K = 2 * np.pi * 325 * 10 ** 3
     rho = evolve(N, tf, nt, numsteps, steps_per_anim, beta, kappa, K)
-    np.save(f"DensityMatrixEvolved_numsteps={numsteps}_N={N}.npy", rho)
+    np.save(f"DensityMatrixEvolved_numsteps={numsteps}_N={N}_k={kappa}.npy", rho)
 
