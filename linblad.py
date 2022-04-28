@@ -38,14 +38,11 @@ def evolve(N, tf, nt, numsteps, steps_per_anim, beta, kappa, K):
                 if i < N-1 and j < N-1:
                     derivative += curr_rho[i+1,j+1]*kappa*(np.sqrt(i*j))
                 curr_rho[i, j] = curr_rho[i, j] + derivative * dt
-        #if t_i % 100000 == 0:
-        #    print(t_i)
-        #test.append(np.real(curr_rho[6,6]))
-        #print(t_i, idx, numsteps+1)
-    return curr_rho #rho[-1,:,:]
+        if t_i % 100000 == 0:
+            print(t_i)
+    return rho
 
 if __name__ == "__main__":
-    #set_num_threads(8)
     N = 35
     beta = 2
     numsteps = 3065
@@ -58,12 +55,5 @@ if __name__ == "__main__":
     kappa = 2 * np.pi * 10 * 10 ** 3
     K = 2 * np.pi * 325 * 10 ** 3
     rho = evolve(N, tf, nt, numsteps, steps_per_anim, beta, kappa, K)
-    print(rho)
-    np.save("denmat.npy", rho)
-    #print(rho[-1,:,:])
+    np.save(f"DensityMatrixEvolved_numsteps={numsteps}_N={N}.npy", rho)
 
-# next steps 
-# Verify that it is stable and working for 3065ns
-# Optimize it a lot with the super vectorized sit
-# Save all of rho and then use the plotting function to make a gif 
-# just evolve each figure 
